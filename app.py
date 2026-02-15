@@ -9,6 +9,10 @@ app = Flask(__name__)
 
 # Use environment variables for production
 basedir = os.path.abspath(os.path.dirname(__file__))
+instance_path = os.path.join(basedir, 'instance')
+if not os.path.exists(instance_path):
+    os.makedirs(instance_path)
+
 database_url = os.environ.get('DATABASE_URL')
 if database_url and database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
@@ -432,7 +436,16 @@ def init_db():
 
     print(f"Login as 'customer'/'123456' or 'merchant1'/'123456'")
 
+# Automatically initialize database when the app starts
+# This ensures tables are created and dummy data is seeded on platforms like Render
+try:
+    with app.app_context():
+        db.create_all()
+        # Only seed if no users exist
+        if not User.query.first():
+            init_db()
+except Exception as e:
+    print(f"Database initialization error: {e}")
+
 if __name__ == '__main__':
-    if not os.path.exists('instance/delivery_v4.db') and not os.path.exists('delivery_v4.db'):
-        init_db()
     app.run(debug=True, port=5000)
