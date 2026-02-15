@@ -155,6 +155,12 @@ def add_review(order_id):
     rating = request.form.get('rating')
     
     if content and rating:
+        # Check if review already exists for this order
+        existing_review = Review.query.filter_by(order_id=order.id).first()
+        if existing_review:
+            flash('该订单已评价过')
+            return redirect(url_for('user_profile'))
+            
         review = Review(user_id=current_user.id, shop_id=order.shop_id, order_id=order.id, content=content, rating=int(rating))
         db.session.add(review)
         db.session.commit()
@@ -353,7 +359,10 @@ def init_db():
                 
                 s_type, s_products = shop_data[(i - 1) % len(shop_data)]
                 shop_name = f"{s_type} Shop {i}"
-                shop = Shop(name=shop_name, description=f"The best {s_type} in town!", owner=merchant)
+                # 洛杉矶范围大约在: Lat 33.7 to 34.3, Lon -118.6 to -118.1
+                lat = random.uniform(33.7, 34.3)
+                lng = random.uniform(-118.6, -118.1)
+                shop = Shop(name=shop_name, description=f"The best {s_type} in town!", owner=merchant, latitude=lat, longitude=lng)
                 db.session.add(shop)
                 db.session.commit() # Commit to get IDs
                 

@@ -27,6 +27,8 @@ class Shop(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     complaint_count = db.Column(db.Integer, default=0)
     is_active = db.Column(db.Boolean, default=True)
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
     products = db.relationship('Product', backref='shop', lazy=True)
     reviews = db.relationship('Review', backref='shop', lazy=True)
 
