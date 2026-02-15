@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}注册 - 美味到家{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 400px; margin: 50px auto;">
+    <h2 class="text-center">注册新账号</h2>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div style="color: red; text-align: center; margin-bottom: 10px;">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <label>用户名:</label>
+        <input type="text" name="username" required>
+        
+        <label>密码:</label>
+        <input type="password" name="password" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+        
+        <label>角色:</label>
+        <select name="role" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="customer">普通用户</option>
+            <option value="merchant">商家</option>
+        </select>
+        
+        <button type="submit" class="btn" style="width: 100%;">注册</button>
+    </form>
+    
+    <p class="text-center mt-2">
+        已有账号? <a href="{{ url_for('login') }}">直接登录</a>
+    </p>
+</div>
+{% endblock %}

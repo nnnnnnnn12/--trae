@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}商品管理 - 美味到家{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-2">
+    <h1>{{ shop.name }} - 商品管理</h1>
+</div>
+
+<div class="card mb-2">
+    <h3>上架新商品</h3>
+    <form action="{{ url_for('add_product') }}" method="post" style="display: flex; gap: 10px; align-items: flex-end;">
+        <div style="flex: 2;">
+            <label>商品名称</label>
+            <input type="text" name="name" required style="margin-bottom: 0;">
+        </div>
+        <div style="flex: 1;">
+            <label>价格</label>
+            <input type="number" name="price" step="0.01" required style="margin-bottom: 0;">
+        </div>
+        <div style="flex: 2;">
+            <label>图片URL (可选)</label>
+            <input type="text" name="image_url" placeholder="默认随机图片" style="margin-bottom: 0;">
+        </div>
+        <button type="submit" class="btn">添加</button>
+    </form>
+</div>
+
+<h2>在售商品列表</h2>
+<div class="grid">
+    {% for product in shop.products %}
+    <div class="card">
+        <div style="position: relative;">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}" 
+                 onerror="this.onerror=null;this.src='https://placehold.co/400x300?text={{ product.name|urlencode }}';"
+                 style="width: 100%; height: 150px; object-fit: cover; border-radius: 4px; background-color: #eee;">
+            {% if not product.is_active %}
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 4px;">
+                    已下架
+                </div>
+            {% endif %}
+        </div>
+        <h3 class="mt-2">{{ product.name }}</h3>
+        <p class="price">¥{{ product.price }}</p>
+        
+        <form action="{{ url_for('toggle_product', product_id=product.id) }}" method="post" style="margin-top: 10px;">
+            {% if product.is_active %}
+                <button type="submit" class="btn btn-secondary" style="width: 100%; background-color: #f44336;">下架</button>
+            {% else %}
+                <button type="submit" class="btn" style="width: 100%; background-color: #4caf50;">上架</button>
+            {% endif %}
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ shop.name }} - 评价{% endblock %}
+
+{% block content %}
+<div class="card mb-2">
+    <div class="flex-between">
+        <h2>{{ shop.name }} 的评价</h2>
+        <a href="{{ url_for('shop_detail', shop_id=shop.id) }}" class="btn btn-secondary">返回点餐</a>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: 2fr 1fr;">
+    <div>
+        <h3>所有评价</h3>
+        {% if shop.reviews %}
+            {% for review in shop.reviews %}
+            <div class="card">
+                <div class="flex-between">
+                    <strong>{{ review.user.username }}</strong>
+                    <span style="color: #ff9800;">{{ "★" * review.rating }}</span>
+                </div>
+                <p class="mt-2">{{ review.content }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="card">
+                <p>暂无评价，快来抢沙发吧！</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div>
+        <h3>写评价</h3>
+        <div class="card">
+            <form action="{{ url_for('add_review', shop_id=shop.id) }}" method="post">
+                <label>评分 (1-5):</label>
+                <select name="rating" required style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ddd;">
+                    <option value="5">★★★★★ (5)</option>
+                    <option value="4">★★★★ (4)</option>
+                    <option value="3">★★★ (3)</option>
+                    <option value="2">★★ (2)</option>
+                    <option value="1">★ (1)</option>
+                </select>
+                
+                <label>内容:</label>
+                <textarea name="content" required placeholder="写下你的用餐体验..." rows="5"></textarea>
+                
+                <button type="submit" class="btn" style="width: 100%;">提交评价</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

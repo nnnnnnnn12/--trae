@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}商家仪表盘 - 美味到家{% endblock %}
+
+{% block content %}
+<div class="card mb-2">
+    <h1>{{ shop.name }} - 经营概况</h1>
+    <p>{{ shop.description }}</p>
+</div>
+
+<div class="grid mb-2">
+    <div class="card text-center">
+        <h3>总订单数</h3>
+        <div style="font-size: 2rem; font-weight: bold; color: var(--primary-color);">{{ total_orders }}</div>
+    </div>
+    <div class="card text-center">
+        <h3>累计投诉</h3>
+        <div style="font-size: 2rem; font-weight: bold; color: #f44336;">{{ shop.complaint_count }} / 3</div>
+    </div>
+    <div class="card text-center">
+        <h3>总收入</h3>
+        <div style="font-size: 2rem; font-weight: bold; color: #4caf50;">¥{{ revenue }}</div>
+    </div>
+</div>
+
+<h2>订单列表</h2>
+{% if orders %}
+    {% for order in orders|reverse %}
+    <div class="card">
+        <div class="flex-between">
+            <div>
+                <h3>订单 #{{ order.id }} - 用户: {{ order.user.username }}</h3>
+                <span class="badge 
+                    {% if order.status == 'Pending' %}badge-warning
+                    {% elif order.status == 'Completed' %}badge-success
+                    {% elif order.status == 'Refunded' %}badge-secondary
+                    {% elif order.status == 'Complained' %}badge-danger
+                    {% endif %}">
+                    {% if order.status == 'Pending' %}待处理
+                    {% elif order.status == 'Completed' %}已完成
+                    {% elif order.status == 'Refunded' %}已退款
+                    {% elif order.status == 'Complained' %}已投诉
+                    {% else %}{{ order.status }}
+                    {% endif %}
+                </span>
+            </div>
+            <div>
+                {% if order.status == 'Pending' %}
+                <form action="{{ url_for('complete_order', order_id=order.id) }}" method="post">
+                    <button type="submit" class="btn btn-secondary">完成订单</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+        <ul>
+            {% for item in order.items %}
+                <li>{{ item.product.name }} (x{{ item.quantity }}) - ¥{{ item.product.price }}</li>
+            {% endfor %}
+        </ul>
+        {% if order.review %}
+        <div style="margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-radius: 4px; border-left: 4px solid #ff9800;">
+            <div style="font-weight: bold; color: #ff9800;">用户评价 ({{ order.review.rating }}星):</div>
+            <div style="font-style: italic;">"{{ order.review.content }}"</div>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="card">
+        <p>暂无订单。</p>
+    </div>
+{% endif %}
+{% endblock %}

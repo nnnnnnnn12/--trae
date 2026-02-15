@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{ shop.name }} - 点餐{% endblock %}
+
+{% block extra_css %}
+<style>
+    .menu-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+    .menu-item:last-child {
+        border-bottom: none;
+    }
+    .price {
+        font-weight: bold;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+    }
+    .shop-header {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        box-shadow: var(--shadow);
+        text-align: center;
+    }
+    .action-bar {
+        position: sticky;
+        bottom: 20px;
+        background: white;
+        padding: 15px;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="shop-header">
+    <h1>{{ shop.name }}</h1>
+    <p>{{ shop.description }}</p>
+    <div class="mt-2">
+        <a href="{{ url_for('shop_reviews', shop_id=shop.id) }}" class="btn btn-secondary">查看评价 ({{ shop.reviews|length }})</a>
+    </div>
+</div>
+
+<h2>菜单</h2>
+<form action="{{ url_for('place_order', shop_id=shop.id) }}" method="post">
+    <div class="card">
+        {% for product in products %}
+        <div class="menu-item">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" 
+                         onerror="this.onerror=null;this.src='https://placehold.co/400x300?text={{ product.name|urlencode }}';"
+                         style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; background-color: #eee;">
+                {% endif %}
+                <div>
+                    <h3>{{ product.name }}</h3>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <div class="price">¥{{ product.price }}</div>
+                <label style="margin-top: 5px; display: block;">
+                    <input type="checkbox" name="product_id" value="{{ product.id }}"> 选择
+                </label>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="action-bar">
+        <span>已选商品将加入购物车</span>
+        <button type="submit" class="btn">立即下单</button>
+    </div>
+</form>
+{% endblock %}

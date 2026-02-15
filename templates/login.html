@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}登录 - 美味到家{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 400px; margin: 50px auto;">
+    <h2 class="text-center">登录</h2>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div style="color: red; text-align: center; margin-bottom: 10px;">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <label>用户名:</label>
+        <input type="text" name="username" required>
+        
+        <label>密码:</label>
+        <input type="password" name="password" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+        
+        <button type="submit" class="btn" style="width: 100%;">登录</button>
+    </form>
+    
+    <p class="text-center mt-2">
+        还没有账号? <a href="{{ url_for('register') }}">立即注册</a>
+    </p>
+    
+    <div style="background: #f9f9f9; padding: 10px; margin-top: 20px; font-size: 0.9em; border-radius: 4px;">
+        <strong>测试账号:</strong><br>
+        用户: customer / 123456<br>
+        商家: merchant1 / 123456
+    </div>
+</div>
+{% endblock %}
