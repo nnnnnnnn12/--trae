@@ -359,9 +359,9 @@ def init_db():
                 
                 s_type, s_products = shop_data[(i - 1) % len(shop_data)]
                 shop_name = f"{s_type} Shop {i}"
-                # 洛杉矶范围大约在: Lat 33.7 to 34.3, Lon -118.6 to -118.1
-                lat = random.uniform(33.7, 34.3)
-                lng = random.uniform(-118.6, -118.1)
+                # 新余市范围大约在: Lat 27.70 to 27.90, Lon 114.80 to 115.00
+                lat = random.uniform(27.70, 27.90)
+                lng = random.uniform(114.80, 115.00)
                 shop = Shop(name=shop_name, description=f"The best {s_type} in town!", owner=merchant, latitude=lat, longitude=lng)
                 db.session.add(shop)
                 db.session.commit() # Commit to get IDs

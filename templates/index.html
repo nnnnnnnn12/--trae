@@ -2,6 +2,8 @@
 
 {% block title %}首页 - 美味到家{% endblock %}
 
+{% endblock %}
+
 {% block content %}
 <div class="text-center mb-2">
     <h1>欢迎来到美味到家</h1>
@@ -24,8 +26,55 @@
                 <span class="badge badge-success">4.5 ⭐</span>
                 <span style="color: var(--primary-color); font-weight: bold;">{{ shop.products|length }} 个商品</span>
             </div>
+            <div class="mt-2" style="font-size: 0.9rem; color: #888; border-top: 1px solid #eee; padding-top: 10px;">
+                <span class="shop-location" data-lat="{{ shop.latitude }}" data-lng="{{ shop.longitude }}">
+                    📍 正在计算距离...
+                </span>
+            </div>
         </div>
     </div>
     {% endfor %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var userLat = position.coords.latitude;
+                var userLng = position.coords.longitude;
+
+                document.querySelectorAll('.shop-location').forEach(function(el) {
+                    var shopLat = parseFloat(el.getAttribute('data-lat'));
+                    var shopLng = parseFloat(el.getAttribute('data-lng'));
+
+                    if (!isNaN(shopLat) && !isNaN(shopLng)) {
+                        // Haversine formula
+                        var R = 6371; // km
+                        var dLat = (shopLat - userLat) * Math.PI / 180;
+                        var dLon = (shopLng - userLng) * Math.PI / 180;
+                        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                                Math.cos(userLat * Math.PI / 180) * Math.cos(shopLat * Math.PI / 180) *
+                                Math.sin(dLon/2) * Math.sin(dLon/2);
+                        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                        var d = R * c;
+
+                        el.innerHTML = '📍 距离您 ' + d.toFixed(2) + ' km';
+                    } else {
+                        el.innerHTML = '📍 位置信息未设置';
+                    }
+                });
+            }, function(error) {
+                document.querySelectorAll('.shop-location').forEach(function(el) {
+                    el.innerHTML = '📍 无法获取距离 (权限拒绝)';
+                });
+            });
+        } else {
+            document.querySelectorAll('.shop-location').forEach(function(el) {
+                el.innerHTML = '📍 浏览器不支持定位';
+            });
+        }
+    });
+</script>
 {% endblock %}
