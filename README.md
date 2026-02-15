@@ -1,11 +1,12 @@
 # 美味到家 (Delicious Delivery) - Python 外卖平台
 
-这是一个基于 Python Flask 开发的全功能外卖配送平台原型。支持用户下单、商家管理、评价系统以及投诉监管机制。
+这是一个基于 Python Flask 开发的全功能外卖配送平台原型。支持用户下单、商家管理、评价系统、投诉监管机制以及**实时地理位置测距**。
 
 ## 🌟 核心功能
 
 ### 👤 用户端 (Customer)
 - **浏览店铺**：查看 20+ 家不同品类的优质店铺（披萨、汉堡、寿司、中餐等）。
+- **实时测距**：系统自动获取用户当前地理位置，并实时计算与店铺（初始设在**江西省新余市**）之间的物理距离（基于 Haversine 公式）。
 - **智能图片**：商品配备高质量美食图片，并具备加载失败自动修复功能。
 - **在线点餐**：选择心仪商品并一键下单。
 - **订单管理**：
@@ -23,16 +24,16 @@
 
 ## 🛠️ 技术栈
 - **后端**: Python 3.11 + Flask
-- **数据库**: SQLite (SQLAlchemy ORM)
+- **数据库**: PostgreSQL (生产环境) / SQLite (开发环境) + SQLAlchemy ORM
 - **认证**: Flask-Login (支持角色权限区分)
-- **前端**: Jinja2 模板引擎 + CSS3 (Flexbox/Grid) + JavaScript (图片容错处理)
+- **前端**: Jinja2 + CSS3 (Grid 布局) + JavaScript (Haversine 测距算法)
 - **生产服务器**: Gunicorn
 
 ## 🚀 快速开始
 
 ### 1. 克隆项目
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/nnnnnnnn12/--trae.git
 cd trae-test-python
 ```
 
@@ -54,11 +55,11 @@ python app.py
 - **商家**: `merchant1` / `123456` (商家编号 1-24 均可)
 
 ## 📦 部署说明
-项目已预配置好生产环境所需的 `Procfile` 和 `requirements.txt`。推荐部署至 **Render** 或 **PythonAnywhere**。
+项目已针对 **Render** 进行优化，包含 `Procfile` 和自动化的数据库初始化脚本。
 
 - **环境变量配置**:
-  - `SECRET_KEY`: 用于加密 Session 的随机字符串。
-  - `DATABASE_URL`: (可选) 连接外部 PostgreSQL 数据库的链接。
+  - `SECRET_KEY`: 必须设置，用于加密 Session。
+  - `DATABASE_URL`: 推荐连接 PostgreSQL 数据库。
 
 ## 📄 开源协议
 MIT License
